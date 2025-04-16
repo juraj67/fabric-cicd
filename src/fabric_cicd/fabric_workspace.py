@@ -416,15 +416,26 @@ class FabricWorkspace:
         is_deployed = bool(item_guid)
 
         if not is_deployed:
-            combined_body = {**combined_body, **{"folderId": item.folder_id}}
+            
+            if "SQLDatabase" == item_type:
+                sqldb_body = {"displayName": item_name}
+                # Create a new SQL Database if it does not exist
+                # https://learn.microsoft.com/en-us/rest/api/fabric/sqldatabase/items/create-sql-database
+                item_create_response = self.endpoint.invoke(
+                    method="POST", url=f"{self.base_api_url}/SQLDatabases", body=sqldb_body, max_retries=max_retries
+                )
+                item_guid = item_create_response["body"]["id"]
+                self.repository_items[item_type][item_name].guid = item_guid
+            else:
+                combined_body = {**combined_body, **{"folderId": item.folder_id}}
 
-            # Create a new item if it does not exist
-            # https://learn.microsoft.com/en-us/rest/api/fabric/core/items/create-item
-            item_create_response = self.endpoint.invoke(
-                method="POST", url=f"{self.base_api_url}/items", body=combined_body, max_retries=max_retries
-            )
-            item_guid = item_create_response["body"]["id"]
-            self.repository_items[item_type][item_name].guid = item_guid
+                # Create a new item if it does not exist
+                # https://learn.microsoft.com/en-us/rest/api/fabric/core/items/create-item
+                item_create_response = self.endpoint.invoke(
+                    method="POST", url=f"{self.base_api_url}/items", body=combined_body, max_retries=max_retries
+                )
+                item_guid = item_create_response["body"]["id"]
+                self.repository_items[item_type][item_name].guid = item_guid
 
         elif is_deployed and not shell_only_publish:
             # Update the item's definition if full publish is required
