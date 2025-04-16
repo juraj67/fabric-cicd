@@ -20,9 +20,11 @@ ACCEPTED_ITEM_TYPES_UPN = (
     "Lakehouse",
     "MirroredDatabase",
     "VariableLibrary",
-    "SQLDatabase",
 )
 ACCEPTED_ITEM_TYPES_NON_UPN = ACCEPTED_ITEM_TYPES_UPN
+CUSTOM_ITEM_CREATE_TYPES = {
+    "SQLDatabase": "SQLDatabases"
+}
 
 # Publish
 MAX_RETRY_OVERRIDE = {"SemanticModel": 10, "Report": 10, "VariableLibrary": 7}
