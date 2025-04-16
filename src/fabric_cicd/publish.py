@@ -64,6 +64,9 @@ def publish_all_items(fabric_workspace_obj: FabricWorkspace, item_name_exclude_r
     if "MirroredDatabase" in fabric_workspace_obj.item_type_in_scope:
         print_header("Publishing MirroredDatabase")
         items.publish_mirroreddatabase(fabric_workspace_obj)
+    if "SQLDatabase" in fabric_workspace_obj.item_type_in_scope:
+        print_header("Publishing SQLDatabases")
+        items.publish_sqldatabase(fabric_workspace_obj)
     if "Environment" in fabric_workspace_obj.item_type_in_scope:
         print_header("Publishing Environments")
         items.publish_environments(fabric_workspace_obj)
@@ -135,6 +138,7 @@ def unpublish_all_orphan_items(fabric_workspace_obj: FabricWorkspace, item_name_
         "MirroredDatabase",
         "Lakehouse",
         "VariableLibrary",
+        "SQLDatabase",
     ]:
         if x in fabric_workspace_obj.item_type_in_scope and (
             x != "Lakehouse" or "enable_lakehouse_unpublish" in constants.FEATURE_FLAG
