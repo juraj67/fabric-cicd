@@ -438,14 +438,15 @@ class FabricWorkspace:
                 self.repository_items[item_type][item_name].guid = item_guid
 
         elif is_deployed and not shell_only_publish:
-            # Update the item's definition if full publish is required
-            # https://learn.microsoft.com/en-us/rest/api/fabric/core/items/update-item-definition
-            self.endpoint.invoke(
-                method="POST",
-                url=f"{self.base_api_url}/items/{item_guid}/updateDefinition?updateMetadata=True",
-                body=definition_body,
-                max_retries=max_retries,
-            )
+            if "SQLDatabase" != item_type:
+                # Update the item's definition if full publish is required
+                # https://learn.microsoft.com/en-us/rest/api/fabric/core/items/update-item-definition
+                self.endpoint.invoke(
+                    method="POST",
+                    url=f"{self.base_api_url}/items/{item_guid}/updateDefinition?updateMetadata=True",
+                    body=definition_body,
+                    max_retries=max_retries,
+                )
         elif is_deployed and shell_only_publish:
             # Remove the 'type' key as it's not supported in the update-item API
             metadata_body.pop("type", None)
